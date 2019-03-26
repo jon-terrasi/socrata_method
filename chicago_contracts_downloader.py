@@ -31,25 +31,25 @@ results_df.to_csv(r'now.csv')
 # create timestamp for file naming
 ts = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 
-# set current working directory, and pattern1_str to timestamped CSV files
+# set current working directory, and pattern_str to timestamped CSV files
 files_list = os.listdir(os.getcwd())
-pattern1_str = '*contracts.csv'
+pattern_str = '*contracts.csv'
 
 # create list of CSV files in directory
 csv_list = []
 for entry in files_list:
-    if fnmatch.fnmatch(entry, pattern1_str):
+    if fnmatch.fnmatch(entry, pattern_str):
         csv_list += entry.split('\n')
-
-# sort by modify time and save latest to "prev_csv"
-csv_list = sorted(csv_list, key=os.path.getmtime)
-prev_csv = csv_list[-1]
 
 # in case of no pre-existing database, download current copy and exit
 if len(csv_list) == 0:
     print('No pre-existing CSV databases found.')
     os.rename('now.csv', ts + '_contracts.csv')
     quit()
+
+# sort by modify time and save latest to "prev_csv"
+csv_list = sorted(csv_list, key=os.path.getmtime)
+prev_csv = csv_list[-1]
 
 # limit total number of CSV files to archive_int 
 archive_int = 10
@@ -65,44 +65,16 @@ now_csv = open('now.csv', 'r')
 prev = prev_csv.readlines()
 now = now_csv.readlines()
 
-# open updates.csv for writing
-updates_csv = open('updates.csv', 'w')
-updates_csv.write(now[0])
+# compare "now" to "prev" in reverse order, break loop at first new line 
+for line in reversed(now):
+    if line not in reversed(prev):
+        print('Chicago Contracts database updated since last execution.')
+        prev_csv.close()
+        now_csv.close()
+        os.rename('now.csv', ts + '_contracts.csv')
+        quit()
 
-# write non-matching lines to "updates.csv"
-compare_int = 100
-for line in now[-compare_int:]:
-    if line not in prev[-compare_int:]:
-        updates_csv.write(line)
-
-# close and reopen updates.csv for reading
-updates_csv.close()
-updates_csv = open('updates.csv', 'r')
-
-# if "updates.csv" contains updated records, close and rename with timestamp
-# else, remove "updates.csv" and "now.csv" temporary file
-if len(updates_csv.readlines()) > 1:
-    print('Chicago Contracts database updated since last execution.')
-    updates_csv.close()
-    os.rename('updates.csv', ts + '_updates.csv')
-    prev_csv.close()
-    now_csv.close()
-    os.rename('now.csv', ts + '_contracts.csv')
-else:
-    print('No change to database since last execution.')
-    updates_csv.close()
-    os.remove('updates.csv')
-    os.remove('now.csv')
-    prev_csv.close()
-    now_csv.close()
-
-# limit total number of *updates.csv files to archive_int
-pattern2_str = '*updates.csv'
-update_list = []
-for entry in files_list:
-    if fnmatch.fnmatch(entry, pattern2_str):
-        update_list += entry.split('\n')
-
-if len(update_list) > archive_int:
-    print('More than', archive_int, 'archived *updates.csv files.')
-    os.remove(update_list[0:-(archive_int)])
+print('No change to database since last execution.')
+os.remove('now.csv')
+prev_csv.close()
+now_csv.close()
