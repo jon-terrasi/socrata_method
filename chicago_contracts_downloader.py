@@ -41,15 +41,15 @@ for entry in files_list:
     if fnmatch.fnmatch(entry, pattern1_str):
         csv_list += entry.split('\n')
 
-# sort by modify time and save latest to "prev_csv"
-csv_list = sorted(csv_list, key=os.path.getmtime)
-prev_csv = csv_list[-1]
-
 # in case of no pre-existing database, download current copy and exit
 if len(csv_list) == 0:
     print('No pre-existing CSV databases found.')
     os.rename('now.csv', ts + '_contracts.csv')
     quit()
+
+# sort by modify time and save latest to "prev_csv"
+csv_list = sorted(csv_list, key=os.path.getmtime)
+prev_csv = csv_list[-1]
 
 # limit total number of CSV files to archive_int 
 archive_int = 10
