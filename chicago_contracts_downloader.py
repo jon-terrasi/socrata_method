@@ -2,11 +2,7 @@
 # NOTE: can run this script in ipython3 for easy setup with...
 # [1]: %run chicago_contracts_downloader.py
 
-# TODO
-# -> compare "prev" and "now" CSVs from end to beginning (i.e. backwards)
-# -> compare lines using md5 hashing
-
-import os, datetime, fnmatch, csv
+import os, datetime, fnmatch, csv, hashlib
 import pandas as pd
 from sodapy import Socrata
 
@@ -61,16 +57,29 @@ if len(csv_list) > archive_int:
 prev_csv = open(prev_csv, 'r')
 now_csv = open('now.csv', 'r')
 
-# read in old and new CSV files
+# read in old and new CSV files, produce hashed versions
 prev = prev_csv.readlines()
 now = now_csv.readlines()
 
+prev_hash = []
+for line in prev:
+    result = hashlib.md5(line.encode()).digest()
+    prev_hash.append(result)
+
+now_hash = []
+for line in now:
+    result = hashlib.md5(line.encode()).digest()
+    now_hash.append(result)
+
 # compare "now" to "prev" in reverse order, break loop at first new line 
-for line in reversed(now):
-    if line not in reversed(prev):
+for line in reversed(now_hash):
+    if line not in reversed(prev_hash):
         print('Chicago Contracts database updated since last execution.')
         prev_csv.close()
         now_csv.close()
+        with open(ts + '_hash.txt') as f:
+            for element in now_hash:
+                f.write("%s\n" % element)
         os.rename('now.csv', ts + '_contracts.csv')
         quit()
 
