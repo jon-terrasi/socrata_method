@@ -27,25 +27,41 @@ results_df.to_csv(r'now.csv')
 # create timestamp for file naming
 ts = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 
-# set current working directory, and pattern_str to timestamped CSV files
+# set current working directory, and pattern_csv to timestamped CSV files
 files_list = os.listdir(os.getcwd())
-pattern_str = '*contracts.csv'
+pattern_csv = '*contracts.csv'
+pattern_txt = '*.txt'
 
 # create list of CSV files in directory
 csv_list = []
 for entry in files_list:
-    if fnmatch.fnmatch(entry, pattern_str):
+    if fnmatch.fnmatch(entry, pattern_csv):
         csv_list += entry.split('\n')
 
+txt_list = []
+for entry in files_list:
+    if fnmatch.fnmatch(entry, pattern_txt):
+        txt_list += entry.split('\n')
+
 # in case of no pre-existing database, download current copy and exit
-if len(csv_list) == 0:
-    print('No pre-existing CSV databases found.')
+if len(csv_list) == 0 and len(txt_list) == 0:
+    print('No pre-existing CSV databases or hash files found.')
+    now_csv = open('now.csv', 'r')
+    now = now_csv.readlines()
+    now_hash = []
+    for line in now:
+        result = hashlib.md5(line.encode()).digest()
+        now_hash.append(result)
+    with open(ts + '_hash.txt') as f:
+        for element in now_hash:
+            f.write("%s\n" % element)
+    now_csv.close()
     os.rename('now.csv', ts + '_contracts.csv')
     quit()
 
 # sort by modify time and save latest to "prev_csv"
-csv_list = sorted(csv_list, key=os.path.getmtime)
-prev_csv = csv_list[-1]
+txt_list = sorted(txt_list, key=os.path.getmtime)
+prev_txt = txt_list[-1]
 
 # limit total number of CSV files to archive_int 
 archive_int = 10
@@ -54,17 +70,16 @@ if len(csv_list) > archive_int:
     os.remove(csv_list[0:-(archive_int + 1)])
 
 # open newest preexisting local copy ("prev_csv"), downloaded copy ("now_csv")
-prev_csv = open(prev_csv, 'r')
+prev_hashfile = open(prev_txt, 'r')
 now_csv = open('now.csv', 'r')
 
 # read in old and new CSV files, produce hashed versions
-prev = prev_csv.readlines()
+prev = prev_hashfile.readlines()
 now = now_csv.readlines()
 
 prev_hash = []
 for line in prev:
-    result = hashlib.md5(line.encode()).digest()
-    prev_hash.append(result)
+    prev_hash.append(line)
 
 now_hash = []
 for line in now:
@@ -75,15 +90,15 @@ for line in now:
 for line in reversed(now_hash):
     if line not in reversed(prev_hash):
         print('Chicago Contracts database updated since last execution.')
-        prev_csv.close()
         now_csv.close()
         with open(ts + '_hash.txt') as f:
             for element in now_hash:
                 f.write("%s\n" % element)
+        prev_hashfile.close()
         os.rename('now.csv', ts + '_contracts.csv')
         quit()
 
 print('No change to database since last execution.')
 os.remove('now.csv')
-prev_csv.close()
 now_csv.close()
+prev_hashfile.close()
