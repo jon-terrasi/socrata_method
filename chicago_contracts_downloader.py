@@ -52,9 +52,10 @@ if len(csv_list) == 0 and len(txt_list) == 0:
     for line in now:
         result = hashlib.md5(line.encode()).digest()
         now_hash.append(result)
-    with open(ts + '_hash.txt') as f:
-        for element in now_hash:
-            f.write("%s\n" % element)
+    f = open(ts + '_hash.txt', 'w')
+    for element in now_hash:
+        f.write("%s\n" % element)
+    f.close()
     now_csv.close()
     os.rename('now.csv', ts + '_contracts.csv')
     quit()
@@ -69,11 +70,10 @@ if len(csv_list) > archive_int:
     print('More than', archive_int, 'copies of prev database.')
     os.remove(csv_list[0:-(archive_int + 1)])
 
-# open newest preexisting local copy ("prev_csv"), downloaded copy ("now_csv")
+# open previous txt hash file, create txt hash file for now.csv
 prev_hashfile = open(prev_txt, 'r')
 now_csv = open('now.csv', 'r')
 
-# read in old and new CSV files, produce hashed versions
 prev = prev_hashfile.readlines()
 now = now_csv.readlines()
 
@@ -91,9 +91,10 @@ for line in reversed(now_hash):
     if line not in reversed(prev_hash):
         print('Chicago Contracts database updated since last execution.')
         now_csv.close()
-        with open(ts + '_hash.txt') as f:
-            for element in now_hash:
-                f.write("%s\n" % element)
+        f = open(ts + '_hash.txt', 'w')
+        for element in now_hash:
+            f.write("%s\n" % element)
+        f.close()
         prev_hashfile.close()
         os.rename('now.csv', ts + '_contracts.csv')
         quit()
