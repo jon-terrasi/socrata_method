@@ -57,11 +57,7 @@ if len(csv_list) == 0 and len(txt_list) == 0:
     os.rename('current.csv', ts + '_contracts.csv')
     quit()
 
-# sort by modify time and save latest to "prev_csv"
-csv_list = sorted(csv_list, key=os.path.getmtime)
-previous_csv = csv_list[-1]
-
-# sort by modify time and save latest to "previous_csv"
+# sort hash text files by modify time and assign latest to "previous_txt"
 txt_list = sorted(txt_list, key=os.path.getmtime)
 previous_txt = txt_list[-1]
 
