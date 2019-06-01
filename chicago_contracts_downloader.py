@@ -59,7 +59,7 @@ if len(csv_list) == 0 and len(txt_list) == 0:
 
 # sort by modify time and save latest to "prev_csv"
 csv_list = sorted(csv_list, key=os.path.getmtime)
-prev_csv = csv_list[-1]
+previous_csv = csv_list[-1]
 
 # sort by modify time and save latest to "previous_csv"
 txt_list = sorted(txt_list, key=os.path.getmtime)
