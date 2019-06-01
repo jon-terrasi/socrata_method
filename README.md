@@ -8,7 +8,7 @@ The script is intended to be run regularly, and compares newly downloaded datase
 
 ## Recommended Usage
 
-Because the script compares the last 100 lines of the most recent pre-existing copy of a dataset and the newly downloaded one, it is recommended to run the script once every 3-4 days. On Unix-like systems, it may be useful to set up a cron job to automate this process.
+Because the script compares lines from the previous downloaded dataset to the newly downloaded dataset from the end of the file going backward, it is recommended to run the script once every 2-3 days in order to avoid missing incremental published updates to the dataset (as only the most recent new line will trigger retention). On Unix-like systems, it may be useful to set up a cron job to automate this process.
 
 ## Dependencies
 
