@@ -1,15 +1,15 @@
-department,dataset,id
-Administration & Finance,Contracts,rsxa-ify5
-Administration & Finance,Payments,s4vu-giwb
-Administration & Finance,Employee Indebtedness to the City of Chicago,pasx-mnuv
-Administration & Finance,Ordinance Violations,6br9-quuz
-Buildings,Building Permits,ydr8-5enu
-Buildings,Building Violations,22u3-xenr
-Environmental & Sustainable Development,Array of Things Locations,6rq2-yx28
-Ethics,Lobbyist Data: Contributions,p9p7-vfqc
-Ethics,Lobbyist Data: Gifts,5d79-9xqr
-Ethics,Lobbyist Data: Lobbying Activity,pahz-egmi
-Ethics,Lobbyist Data: Lobbyist-Employer-Client Combinations,2eqz-3nvz
-Ethics,Lobbyist Data: Lobbyists,tq3e-t5yq
-Transportation,Towed Vehicles,ygr5-vcbg
-Transportation,Traffic Crashes: Crashes,85ca-t3if
+ID,Dataset
+rsxa-ify5,Contracts
+s4vu-giwb,Payments
+pasx-mnuv,Employee Indebtedness to the City of Chicago
+6br9-quuz,Ordinance Violations
+ydr8-5enu,Building Permits
+22u3-xenr,Building Violations
+6rq2-yx28,Array of Things Locations
+p9p7-vfqc,Lobbyist Data: Contributions
+5d79-9xqr,Lobbyist Data: Gifts
+pahz-egmi,Lobbyist Data: Lobbying Activity
+2eqz-3nvz,Lobbyist Data: Lobbyist-Employer-Client Combinations
+tq3e-t5yq,Lobbyist Data: Lobbyists
+ygr5-vcbg,Towed Vehicles
+85ca-t3if,Traffic Crashes: Crashes
