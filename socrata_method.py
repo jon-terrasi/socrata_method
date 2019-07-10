@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # NOTE: can run this script in ipython3 for easy setup with...
-# [1]: %run chicago_dataset_downloader.py
+# [1]: %run socrata_method.py
 
 import os, datetime, fnmatch, csv, hashlib
 import argparse, shlex
